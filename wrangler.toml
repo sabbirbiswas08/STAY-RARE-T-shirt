@@ -1,0 +1,11 @@
+name = "stay-rare-t-shirt"
+type = "javascript"
+compatibility_date = "2024-01-01"
+
+[assets]
+directory = "./dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "stay-rare-t-shirt-orders"
+database_id = "944d7175-f01b-4fc4-8e4f-0efaaf540da3"
