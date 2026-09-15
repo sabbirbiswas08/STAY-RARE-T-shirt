@@ -61,14 +61,14 @@ const Header = () => {
             <span className="text-3xl font-black tracking-tighter text-indigo-600 font-display">{STORE_CONFIG.STORE_NAME}</span>
           </div>
           <nav className="hidden md:flex space-x-12">
-            <button onClick={() => scrollToSection('how-it-works')} className="text-xs font-black text-gray-900 hover:text-indigo-600 transition-colors uppercase tracking-[0.2em] font-display">Process</button>
-            <button onClick={() => scrollToSection('benefits')} className="text-xs font-black text-gray-900 hover:text-indigo-600 transition-colors uppercase tracking-[0.2em] font-display">Features</button>
+            <button onClick={() => scrollToSection('how-it-works')} className="text-xs font-black text-gray-900 hover:text-indigo-600 transition-colors uppercase tracking-[0.2em] font-display">Pro[...]
+            <button onClick={() => scrollToSection('benefits')} className="text-xs font-black text-gray-900 hover:text-indigo-600 transition-colors uppercase tracking-[0.2em] font-display">Feature[...]
             <button onClick={() => scrollToSection('faq')} className="text-xs font-black text-gray-900 hover:text-indigo-600 transition-colors uppercase tracking-[0.2em] font-display">FAQ</button>
           </nav>
           <div className="hidden md:flex items-center">
             <button 
               onClick={() => scrollToSection('order-form')}
-              className="px-8 py-3 bg-indigo-600 text-white text-xs font-black uppercase tracking-[0.2em] rounded-full shadow-2xl shadow-indigo-200 hover:bg-indigo-700 transition-all transform hover:scale-105 active:scale-95 font-display"
+              className="px-8 py-3 bg-indigo-600 text-white text-xs font-black uppercase tracking-[0.2em] rounded-full shadow-2xl shadow-indigo-200 hover:bg-indigo-700 transition-all transform hov[...]
             >
               Order Now
             </button>
@@ -163,7 +163,7 @@ const Hero = ({ selectedVariant, setSelectedVariantName }: { selectedVariant: an
                 <div className="flex flex-col gap-4">
                   <button 
                     onClick={() => document.getElementById('order-form')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="inline-flex items-center justify-center px-10 py-5 bg-gray-900 text-white text-lg font-black rounded-2xl hover:bg-black transition-all transform hover:-translate-y-1 active:scale-95 shadow-2xl shadow-gray-200 font-display"
+                    className="inline-flex items-center justify-center px-10 py-5 bg-gray-900 text-white text-lg font-black rounded-2xl hover:bg-black transition-all transform hover:-translate-y-[...]
                   >
                     Order Now — {selectedVariant.price} {STORE_CONFIG.CURRENCY}
                   </button>
@@ -256,9 +256,9 @@ const Benefits = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group bg-gray-50 p-10 rounded-[40px] border border-transparent hover:border-indigo-100 hover:bg-white hover:shadow-2xl hover:shadow-indigo-100 transition-all duration-500"
+                className="group bg-gray-50 p-10 rounded-[40px] border border-transparent hover:border-indigo-100 hover:bg-white hover:shadow-2xl hover:shadow-indigo-100 transition-all duration-5[...]
               >
-                <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-indigo-600 mb-8 shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
+                <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-indigo-600 mb-8 shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all dura[...]
                   <Icon size={32} />
                 </div>
                 <h3 className="text-2xl font-black text-gray-900 mb-4 font-display">{benefit.title}</h3>
@@ -393,25 +393,29 @@ const OrderForm = ({
     try {
       const orderData = {
         customer_name: formData.customer_name,
-        phone: formData.phone,
         email: formData.email || null,
-        city: formData.city,
         address: formData.address,
-        country: formData.country,
-        notes: formData.notes,
-        product_name: STORE_CONFIG.PRODUCT_NAME,
-        product_variant: selectedVariant.name,
+        size: selectedVariant.name,
         quantity: quantity,
-        status: 'pending'
+        notes: formData.notes || ''
       };
 
-      const { error } = await supabase
-        .from('orders')
-        .insert([orderData]);
+      // POST to Cloudflare Workers API
+      const response = await fetch('/api/order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      });
 
-      if (error) {
-        console.error('Supabase Insert Error:', error);
-        throw new Error(error.message || 'Database insertion failed');
+      if (!response.ok) {
+        throw new Error(`API error: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error('Order submission failed');
       }
       
       setLastCustomerName(formData.customer_name);
@@ -558,7 +562,7 @@ const OrderForm = ({
                     </div>
                     <button 
                       onClick={() => setStep(2)}
-                      className="w-full sm:w-auto px-12 py-5 bg-indigo-600 text-white text-lg font-black rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 flex items-center justify-center space-x-3"
+                      className="w-full sm:w-auto px-12 py-5 bg-indigo-600 text-white text-lg font-black rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 flex items-cent[...]
                     >
                       <span>Continue to Shipping</span>
                       <ArrowRight size={20} />
@@ -595,7 +599,7 @@ const OrderForm = ({
                           required
                           value={formData.customer_name}
                           onChange={(e) => setFormData({...formData, customer_name: e.target.value})}
-                          className={`w-full px-6 py-4 rounded-2xl border-2 ${errors.customer_name ? 'border-red-200 bg-red-50' : 'border-gray-50 bg-gray-50'} focus:bg-white focus:border-indigo-600 outline-none transition-all font-medium`}
+                          className={`w-full px-6 py-4 rounded-2xl border-2 ${errors.customer_name ? 'border-red-200 bg-red-50' : 'border-gray-50 bg-gray-50'} focus:bg-white focus:border-indigo-6[...]
                           placeholder="Enter your name"
                         />
                       </div>
@@ -606,7 +610,7 @@ const OrderForm = ({
                           required
                           value={formData.phone}
                           onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                          className={`w-full px-6 py-4 rounded-2xl border-2 ${errors.phone ? 'border-red-200 bg-red-50' : 'border-gray-50 bg-gray-50'} focus:bg-white focus:border-indigo-600 outline-none transition-all font-medium`}
+                          className={`w-full px-6 py-4 rounded-2xl border-2 ${errors.phone ? 'border-red-200 bg-red-50' : 'border-gray-50 bg-gray-50'} focus:bg-white focus:border-indigo-600 outli[...]
                           placeholder="01XXXXXXXXX"
                         />
                       </div>
@@ -618,7 +622,7 @@ const OrderForm = ({
                         type="email"
                         value={formData.email}
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        className={`w-full px-6 py-4 rounded-2xl border-2 ${errors.email ? 'border-red-200 bg-red-50' : 'border-gray-50 bg-gray-50'} focus:bg-white focus:border-indigo-600 outline-none transition-all font-medium`}
+                        className={`w-full px-6 py-4 rounded-2xl border-2 ${errors.email ? 'border-red-200 bg-red-50' : 'border-gray-50 bg-gray-50'} focus:bg-white focus:border-indigo-600 outline[...]
                         placeholder="your@email.com (optional)"
                       />
                     </div>
@@ -631,7 +635,7 @@ const OrderForm = ({
                           required
                           value={formData.city}
                           onChange={(e) => setFormData({...formData, city: e.target.value})}
-                          className={`w-full px-6 py-4 rounded-2xl border-2 ${errors.city ? 'border-red-200 bg-red-50' : 'border-gray-50 bg-gray-50'} focus:bg-white focus:border-indigo-600 outline-none transition-all font-medium`}
+                          className={`w-full px-6 py-4 rounded-2xl border-2 ${errors.city ? 'border-red-200 bg-red-50' : 'border-gray-50 bg-gray-50'} focus:bg-white focus:border-indigo-600 outlin[...]
                           placeholder="Dhaka"
                         />
                       </div>
@@ -640,7 +644,7 @@ const OrderForm = ({
                         <select 
                           value={formData.country}
                           onChange={(e) => setFormData({...formData, country: e.target.value})}
-                          className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-indigo-600 outline-none transition-all font-medium appearance-none"
+                          className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-indigo-600 outline-none transition-all font-medium appearance-none[...]
                         >
                           <option value="Bangladesh">Bangladesh</option>
                         </select>
@@ -654,7 +658,7 @@ const OrderForm = ({
                         required
                         value={formData.address}
                         onChange={(e) => setFormData({...formData, address: e.target.value})}
-                        className={`w-full px-6 py-4 rounded-2xl border-2 ${errors.address ? 'border-red-200 bg-red-50' : 'border-gray-50 bg-gray-50'} focus:bg-white focus:border-indigo-600 outline-none transition-all font-medium resize-none`}
+                        className={`w-full px-6 py-4 rounded-2xl border-2 ${errors.address ? 'border-red-200 bg-red-50' : 'border-gray-50 bg-gray-50'} focus:bg-white focus:border-indigo-600 outli[...]
                         placeholder="House, Road, Area..."
                       />
                     </div>
@@ -678,7 +682,7 @@ const OrderForm = ({
                     <button 
                       type="submit"
                       disabled={isSubmitting}
-                      className={`w-full py-6 text-white text-xl font-black rounded-[24px] shadow-2xl transition-all flex items-center justify-center space-x-3 transform active:scale-95 font-display bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200`}
+                      className={`w-full py-6 text-white text-xl font-black rounded-[24px] shadow-2xl transition-all flex items-center justify-center space-x-3 transform active:scale-95 font-disp[...]
                     >
                       {isSubmitting ? (
                         <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin" />
