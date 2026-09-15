@@ -669,6 +669,17 @@ const OrderForm = ({
                       />
                     </div>
 
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Order Notes (Optional)</label>
+                      <textarea 
+                        rows={3}
+                        value={formData.notes}
+                        onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                        className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-indigo-600 outline-none transition-all"
+                        placeholder="Any special instructions?"
+                      />
+                    </div>
+
                     <AnimatePresence>
                       {submitStatus === 'error' && (
                         <motion.div 
