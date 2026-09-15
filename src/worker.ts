@@ -20,7 +20,7 @@ export default {
         };
 
         // Insert order into D1 database
-        const result = await env.DB.prepare(
+        await env.DB.prepare(
           `INSERT INTO orders (customer_name, email, address, size, quantity, notes)
            VALUES (?, ?, ?, ?, ?, ?)`
         ).bind(
@@ -32,7 +32,7 @@ export default {
           data.notes || ''
         ).run();
 
-        return new Response(JSON.stringify({ success: true, result }), {
+        return new Response(JSON.stringify({ success: true }), {
           headers: { 'Content-Type': 'application/json' },
           status: 200,
         });
