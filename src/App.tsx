@@ -399,7 +399,7 @@ const OrderForm = ({
     try {
       const orderData = {
         customer_name: formData.customer_name,
-        email: formData.email || null,
+        email: formData.email || '',
         address: formData.address,
         size: selectedVariant.name,
         quantity: quantity,
